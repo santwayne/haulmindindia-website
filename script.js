@@ -62,6 +62,13 @@
     }
   }
 
+  /* ---- graceful fallback when a remote photo cannot load ---- */
+  document.querySelectorAll("img").forEach(function (img) {
+    var hide = function () { img.style.visibility = "hidden"; };
+    if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) hide();
+    img.addEventListener("error", hide);
+  });
+
   /* ---- reveal on scroll ---- */
   var reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {
@@ -131,7 +138,9 @@
       e.preventDefault();
       var lr = track.lr.value.trim().toUpperCase();
       if (!lr) { track.lr.classList.add("field-error"); track.lr.focus(); return; }
-      window.open(APP_URL + "/track?lr=" + encodeURIComponent(lr), "_blank", "noopener");
+      var url = APP_URL + "/track?lr=" + encodeURIComponent(lr);
+      var w = window.open(url, "_blank", "noopener");
+      if (!w) window.location.href = url;
     });
     track.lr.addEventListener("input", function () { track.lr.classList.remove("field-error"); });
   }
