@@ -139,8 +139,8 @@
       var lr = track.lr.value.trim().toUpperCase();
       if (!lr) { track.lr.classList.add("field-error"); track.lr.focus(); return; }
       var url = APP_URL + "/track?lr=" + encodeURIComponent(lr);
-      var w = window.open(url, "_blank", "noopener");
-      if (!w) window.location.href = url;
+      var w = window.open(url, "_blank");
+      if (w) { try { w.opener = null; } catch (err) {} } else { window.location.href = url; }
     });
     track.lr.addEventListener("input", function () { track.lr.classList.remove("field-error"); });
   }
